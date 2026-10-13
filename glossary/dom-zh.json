@@ -1,5 +1,5 @@
 {
- "_note": "主页侧边栏菜单与硬编码字符串，不走 strings.txt，靠 DOM 翻译层",
+ "_note": "主页/设置页硬编码与动态文本，靠 zh-cn.js DOM 层翻译",
  "My Presets": "我的预设",
  "Local Radio": "本地电台",
  "Search TuneIn": "搜索 TuneIn",
@@ -30,5 +30,13 @@
  "Works": "作品",
  "Library Views": "媒体库视图",
  "Classical Music by Conductor": "按指挥家浏览古典音乐",
- "Jazz Composers": "爵士作曲家"
+ "Jazz Composers": "爵士作曲家",
+ "Folder is empty": "文件夹为空",
+ "Drop to add items": "拖放条目到此处添加",
+ "Off - BitPerfect playback": "关闭 - BitPerfect 播放",
+ "Very high": "极高",
+ "Minimum phase": "最小相位",
+ "Linear phase": "线性相位",
+ "Fast roll-off": "陡峭滚降",
+ "Slow roll-off": "缓慢滚降"
 }

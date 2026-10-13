@@ -994,6 +994,15 @@
 	'Security': '安全',
 	'Snooze Length (in minutes)': '贪睡时长（分钟）',
 	'Works': '作品',
+	/* ---------- 补充词表：dom ---------- */
+	'Drop to add items': '拖放条目到此处添加',
+	'Fast roll-off': '陡峭滚降',
+	'Folder is empty': '文件夹为空',
+	'Linear phase': '线性相位',
+	'Minimum phase': '最小相位',
+	'Off - BitPerfect playback': '关闭 - BitPerfect 播放',
+	'Slow roll-off': '缓慢滚降',
+	'Very high': '极高',
   };
 
   /* ---------------------------------------------------------------
