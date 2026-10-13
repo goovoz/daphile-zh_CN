@@ -6,6 +6,10 @@
 - `python3` 可用（Daphile 自带 3.13）
 - 确认 LMS 版本：
 
+> **关于代理**：若访问 GitHub 较慢，可自行设置 `http_proxy` / `https_proxy`
+> 环境变量。**本仓库刻意不写具体代理地址**，避免公开仓库泄露内网凭据。
+> 需要认证的代理写法为 `http://<user>:<pass>@<host>:<port>`。
+
 ```bash
 ssh daphile 'grep -m1 "Starting Lyrion Music Server" /var/daphile/mediaserver/log/server.log'
 ```
