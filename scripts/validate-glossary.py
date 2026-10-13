@@ -30,18 +30,31 @@ GENERIC_BANNED = {
 
 # ── 允许纯英文的专名（值完全等于其中之一才放行）────────────
 PROPER_NOUNS = {
-    # 音频格式名与编码名 —— 本来就不该翻译
-    'Musepack', 'Ogg FLAC', 'Ogg Vorbis', 'Opus', 'WMA Pro', 'WavPack',
-    'WavPack DSD', 'Windows Media', 'Windows Media Pro',
-    'Lyrion Music Server', 'SoftSqueeze', 'Logic Teal', 'Daphile',
-    'Spine', 'MPD', 'Squeezebox', 'Squeezelite', 'Droid',
+    # ── 音频格式名与编码名（本来就不该翻译）──
+    'Musepack', 'Ogg FLAC', 'Ogg Vorbis', 'Opus', 'WavPack',
+    'WavPack DSD', 'Windows Media', 'Windows Media Pro', 'MP2',
     'AAC', 'FLAC', 'MP3', 'PCM', 'WAV', 'AIFF', 'ALAC', 'OGG',
-    'OPUS', 'APE', 'WMA', 'M4A', 'SPX', 'DSF', 'DFF', 'aac',
-    'flac', 'mp3', 'pcm', 'wav', 'aiff', 'alac', 'ogg', 'opus',
-    'Spotify', 'TuneIn Radio', 'RadioTunes.com', 'AudioDio',
-    'iHeartRadio', 'Last.fm', 'ClassicalRadio.com', 'xPL',
-    'OFF', 'ON', 'HTTPS', 'HTTP', 'TLS', 'UPnP', 'DLNA', 'LMS',
-    'CDN', 'HTTP(S)', 'PIN', 'MAC', 'ID', 'URL', 'RSS', 'OPML',
+    'OPUS', 'APE', 'WMA', 'M4A', 'SPX', 'DSF', 'DFF', 'WMA Pro',
+    'aac', 'flac', 'mp3', 'pcm', 'wav', 'aiff', 'alac', 'ogg', 'opus',
+
+    # ── 服务器与产品名 ──
+    'Lyrion Music Server', 'SoftSqueeze', 'Logic Teal', 'Daphile',
+    'Spine', 'SqueezePlay', 'SqueezeSlave', 'SLIMP3',
+    'Squeezebox', 'Squeezebox2/v3', 'Squeezebox Transporter',
+    'Squeezebox Boom', 'Transporter', 'Squeezelite', 'Slim',
+
+    # ── 电台服务名与网站域名 ──
+    'Absolute Radio UK', 'AccuRadio', 'BBC', 'CBC',
+    'Digitally Imported', 'SomaFM', 'RadioTunes', 'RadioTunes.com',
+    'radio.de', 'radio.fr', 'RadioFeeds UK & Ireland', 'Radionomy',
+    'SHOUTcast', 'StereoXL',
+
+    # ── 音乐服务与协议 ──
+    'Spotify', 'TuneIn Radio', 'AudioDio', 'iHeartRadio', 'Last.fm',
+    'ClassicalRadio.com', 'xPL', 'HTTP(S)', 'HTTPS', 'TLS', 'UPnP',
+    'DLNA', 'CDN', 'PIN', 'MAC', 'OPML', 'RSS', 'ASX 播放列表',
+    'MMS', 'Microsoft Media Server', 'MOV', 'QuickTime 影片',
+    'Shorten', 'Off', 'On',
 }
 
 # ── 不该翻译的 key（结构性的，译文应保持标识）─────────────
@@ -55,6 +68,9 @@ TAG = re.compile(r'</?(?:a|br|b|i|em|strong|code|p|span|div|ul|ol|li|'
                  r'h[1-6])\b[^>]*>|&nbsp;|&amp;|&lt;|&gt;|&quot;',
                  re.I)
 KEY_RE = re.compile(r'^[A-Z][A-Z0-9_]*$')
+# 上游 strings.txt 里本来就有的非标准 key（带连字符/数字开头等），
+# 它们不是笔误，是 LMS 自己的命名，保持原样即可
+KEY_EXEMPT = re.compile(r'^(DOUBLE-LINE|SINGLE-LINE)$')
 CJK = re.compile(r'[一-鿿]')
 
 errors, warnings = [], []
@@ -103,6 +119,9 @@ def check_zh_quality(where, key, en, zh):
         if zh.strip() != en.strip():
             warn(where, key, '结构标识符的译文与原文不同，确认是否有意：%r' % zh[:30])
         return
+    # 专名：译文保持原文（不视为漏翻）
+    # ★ 词表里只有译文没有英文原文，en 参数传的是 key，
+    #   所以只能拿译文本身比对白名单
     if zh.strip() in PROPER_NOUNS:
         return
     # 短的全大写缩写（MPC / OGG / WMA ...）是技术标识，不是漏翻
@@ -155,7 +174,7 @@ def validate_file(path):
             continue
 
         # key 命名（仅对 strings-key 层生效）
-        if not is_dom_layer and not KEY_RE.match(key):
+        if not is_dom_layer and not KEY_RE.match(key) and not KEY_EXEMPT.match(key):
             err(where, key, 'key 命名不规范（应全大写+下划线，如 SETUP_FOO_BAR）')
 
         # 类型
