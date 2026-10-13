@@ -1,0 +1,11 @@
+# strings.txt 与词表必须是 LF，CRLF 会导致 LMS 解析异常
+*.txt   text eol=lf
+*.json  text eol=lf
+*.js    text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+
+# 二进制
+*.png   binary
+*.woff2 binary
+*.db    binary

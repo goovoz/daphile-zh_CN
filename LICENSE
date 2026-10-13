@@ -1,0 +1,48 @@
+# 本项目（词表、脚本、zh-cn.js）以 MIT 许可发布。
+
+MIT License
+
+Copyright (c) 2026 daphile-zh contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## 第三方组件
+
+本项目不包含下列组件的代码，仅在部署时与之交互：
+
+- **Lyrion Music Server** —— 界面框架与 strings.txt 机制
+  Copyright 2001-2024 Logitech, 2024- Lyrion Community
+  许可：GPL v3（本仓库不分发其代码）
+
+- **Daphile** —— Linux 发行版
+  Copyright (c) Daphile contributors
+  许可：GPL v3（本仓库不分发其代码）
+
+- **Noto Sans SC**（`assets/NotoSansSC-zh.woff2`）
+  Copyright 2014-2021 Adobe Systems Incorporated
+  许可：SIL Open Font License 1.1
+
+- **jQuery / ExtJS** —— 由 LMS 提供，本仓库不分发
+
+## 商标
+
+Lyrion Music Server、Daphile、Squeezebox、Sonos、Spotify、AirPlay、
+QPlay、网易云音乐、QQ 音乐等名称归各自权利人所有。本项目与这些厂商无隶属关系。

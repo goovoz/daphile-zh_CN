@@ -1,0 +1,53 @@
+# ===== 备份文件 =====
+*.bak
+*.bak.*
+*.orig
+*~
+
+# ===== 从设备取回的临时文件（含完整 strings.txt，不应进仓库）=====
+strings-remote.txt
+strings-*.txt
+*.db
+*.pcap
+selftest.log
+upnp_capture*.log
+cap*.log
+
+# ===== 扫描输出 =====
+need-translate.json
+need-plugin-ui.json
+need-translate-ui.json
+plugin-missing.json
+out.json
+
+# ===== 本地凭据 / 环境专属 =====
+.env
+*.local.json
+config.local.*
+deploy.local.sh
+ansible/inventory.local
+hosts.local
+inventory.local
+
+# ===== 编辑器 / 系统 =====
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# ===== Node =====
+node_modules/
+package-lock.json
+
+# ===== 大文件（字体等二进制若版本管理不便）=====
+# assets/*.woff2 已跟踪；如需用 LFS 请取消下一行注释
+# *.woff2 filter=lfs diff=lfs merge=lfs -text

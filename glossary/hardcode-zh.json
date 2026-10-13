@@ -1,0 +1,5 @@
+{
+ "_note": "插件 Settings.pm 里硬编码的字符串，不走 strings.txt，只能靠 DOM 翻译层",
+ "[common parameters]": "[通用参数]",
+ "[default parameters]": "[默认参数]"
+}
