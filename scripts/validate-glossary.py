@@ -47,7 +47,10 @@ PROPER_NOUNS = {
     'Absolute Radio UK', 'AccuRadio', 'BBC', 'CBC',
     'Digitally Imported', 'SomaFM', 'RadioTunes', 'RadioTunes.com',
     'radio.de', 'radio.fr', 'RadioFeeds UK & Ireland', 'Radionomy',
-    'SHOUTcast', 'StereoXL',
+    'SHOUTcast', 'StereoXL', 'Zen Radio', 'ZenRadio',
+    'Last.fm Audioscrobbler', 'DI.FM - Digitally Imported',
+    'JAZZRADIO.com', 'ROCKRADIO.COM', 'RS232', 'AudioAddict',
+    'UPnP/DLNA Media Interface', 'Sounds & Effects', 'TuneIn Radio',
 
     # ── 音乐服务与协议 ──
     'Spotify', 'TuneIn Radio', 'AudioDio', 'iHeartRadio', 'Last.fm',
