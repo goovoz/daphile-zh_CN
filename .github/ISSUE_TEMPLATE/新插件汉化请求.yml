@@ -1,0 +1,68 @@
+name: 新插件汉化请求
+description: 请求为某个尚未汉化的插件添加译文
+title: "[插件] "
+labels: ["plugin", "help wanted"]
+body: |
+  ## 插件信息
+
+  | 项 | 值 |
+  |---|---|
+  | 插件名 | <!-- 例：RaopBridge --> |
+  | 来源 | <!-- 例：内置插件 / 社区仓库 URL --> |
+  | 版本 | |
+  | 设置页路径 | <!-- 例：/Daphile/plugins/RaopBridge/settings/basic.html --> |
+
+  ---
+
+  ## 缺译清单
+
+  把设置页抓下来反查即可得到：
+
+  ```bash
+  # 1) 从设备取 strings.txt（含插件贡献的 key）
+  scp daphile:/opt/mediaserver/strings.txt ./strings-remote.txt
+
+  # 2) 扫描这个插件的页面
+  python3 scripts/scan.py <设备IP> \
+    --strings strings-remote.txt \
+    --page /Daphile/plugins/<插件名>/settings/basic.html
+  ```
+
+  输出里 `matched` 部分就是待译 key。
+
+  **把结果贴在这里**：
+
+  ```
+  KEY_NAME_1    English text here
+  KEY_NAME_2    Another English text
+  ```
+
+  ---
+
+  ## 已完成的翻译
+
+  <!-- 如果你已经翻译了一部分，贴成可直接粘贴的 JSON 片段： -->
+
+  ```json
+  {
+    "KEY_NAME_1": "中文译文",
+    "KEY_NAME_2": "中文译文"
+  }
+  ```
+
+  ---
+
+  ## 自查
+
+  翻译前请确认（详见 [docs/contributing.md](../blob/master/docs/contributing.md)）：
+
+  - [ ] 占位符 `%s` / `%d` 已原样保留
+  - [ ] HTML 标签 `<a href="...">` 已原样保留
+  - [ ] 专名与音频格式名保持原文
+  - [ ] **没有把词条加进 `_generic`**（尾段匹配会误伤 `*_MODULE_NAME`）
+
+  ---
+
+  ## 备注
+
+  <!-- 插件的特殊之处，比如用了自定义 template、UI 是 JS 动态生成 -->

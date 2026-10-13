@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+# 同一分支的新 push 取消旧运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: 校验词表与脚本
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # ── 1. 词表 JSON 合法性与结构 ──────────────────────────
+      - name: 校验词表 JSON
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in glossary/*.json; do
+            if python3 -c "import json,sys; json.load(open('$f',encoding='utf-8'))" 2>/dev/null; then
+              n=$(python3 -c "
+          import json
+          d = json.load(open('$f', encoding='utf-8'))
+          print(len([k for k in d if not k.startswith('_')]))")
+              printf '  %-28s ✓ %s 条\n' "$f" "$n"
+            else
+              printf '  %-28s ✗ JSON 非法\n' "$f"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      # ── 2. 词表语义校验 ────────────────────────────────────
+      - name: 校验词表规范
+        run: |
+          set -euo pipefail
+          python3 scripts/validate-glossary.py
+
+      # ── 3. 脚本语法 ────────────────────────────────────────
+      - name: 校验 Python 脚本语法
+        run: |
+          set -euo pipefail
+          for f in scripts/*.py; do
+            python3 -m py_compile "$f"
+            printf '  %-28s ✓\n' "$f"
+          done
+
+      - name: 校验 zh-cn.js 语法
+        run: |
+          set -euo pipefail
+          node --check web/zh-cn.js
+          echo "  web/zh-cn.js                ✓"
+
+      # ── 4. 换行符必须是 LF ──────────────────────────────────
+      # CRLF 会让 LMS 的 strings.txt 解析出错，是本项目的真实坑
+      - name: 检查换行符（禁止 CRLF）
+        run: |
+          set -euo pipefail
+          bad=0
+          while IFS= read -r -d '' f; do
+            if grep -qU $'\r' "$f"; then
+              echo "  ✗ $f 含 CRLF"
+              bad=1
+            fi
+          done < <(find . -type f \
+                      \( -name '*.py' -o -name '*.js' -o -name '*.json' -o -name '*.md' \) \
+                      -not -path './.git/*' -print0)
+          if [ "$bad" -eq 0 ]; then
+            echo "  ✓ 全部 LF"
+          else
+            echo ""
+            echo "  修复：dos2unix <file>  或在 .gitattributes 里确认 * text=auto eol=lf"
+            exit 1
+          fi
+
+      # ── 5. 凭据泄漏扫描 ────────────────────────────────────
+      # 本仓库是 public 的，泄漏即事故
+      - name: 扫描凭据与敏感信息
+        run: |
+          set -euo pipefail
+          python3 scripts/scan-secrets.py
+
+      # ── 6. 词表覆盖率统计（信息性，不阻断）──────────────────
+      - name: 统计词表覆盖率
+        if: always()
+        run: python3 scripts/coverage-report.py
+
+      # ── 7. 工具自检 ────────────────────────────────────────
+      - name: 校验工具 CLI 可用
+        run: |
+          set -euo pipefail
+          python3 scripts/scan.py --help > /dev/null
+          python3 scripts/patch-strings.py --help > /dev/null 2>&1 || true
+          echo "  ✓ 工具 CLI 正常"

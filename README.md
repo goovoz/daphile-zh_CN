@@ -100,17 +100,59 @@ python3 scripts/scan.py <host> --out need-translate.json
 > **不要用 Playwright 抓渲染后的 DOM** —— 等久了 `zh-cn.js` 已把能翻的翻掉，
 > 等短了 DOM 还没渲染全。**直接 HTTP 抓服务端渲染的 HTML** 才是准的。
 
-### 2. 补进词表
+### 2. 判断属于哪一层 → 补进对应词表
 
-判断来源，放进对应文件（见上表）。
+见上方[词表体系](#词表体系)。判断规则与翻译规范见 [docs/contributing.md](docs/contributing.md)。
 
-### 3. 应用并验证
+### 3. 本地自检（等同 CI 会跑的检查）
+
+```bash
+python3 scripts/validate-glossary.py   # 词表规范
+python3 scripts/scan-secrets.py        # 凭据泄漏
+python3 scripts/coverage-report.py     # 覆盖率统计
+```
+
+### 4. 应用并验证
 
 ```bash
 python3 scripts/patch-strings.py strings-remote.txt glossary/lms-core.json
 python3 scripts/merge-dict.py web/zh-cn.js glossary/dom-zh.json dom
 # 部署 → 重启 → 浏览器验证
 ```
+
+---
+
+## CI 自动校验
+
+每次 push 与 PR 会自动跑 9 项检查（`.github/workflows/ci.yml`）：
+
+| # | 检查 | 阻断 | 拦住什么 |
+|---|---|---|---|
+| 1 | 词表 JSON 合法性 | ✅ | JSON 语法错误 |
+| 2 | 词表规范 | ✅ | 占位符丢失、HTML 标签丢失、未翻译、`_generic` 禁用词 |
+| 3 | Python 脚本语法 | ✅ | 语法错误 |
+| 4 | zh-cn.js 语法 | ✅ | 语法错误 |
+| 5 | 换行符必须 LF | ✅ | **CRLF 会让 LMS 解析 strings.txt 出错** |
+| 6 | 凭据泄漏扫描 | ✅ | 令牌、私钥、真实内网 IP、代理凭据、误提交的文件 |
+| 7 | 覆盖率统计 | — | 信息性 |
+| 8 | 工具 CLI 可用性 | — | 冒烟测试 |
+
+### 提交 PR 前本地跑一遍
+
+```bash
+python3 scripts/validate-glossary.py && python3 scripts/scan-secrets.py
+```
+
+两项都过，CI 大概率也是绿的。
+
+### Issue / PR 模板
+
+| 模板 | 用途 |
+|---|---|
+| **词条补充** | 引导判断三层归属、附翻译规范清单 |
+| **Bug 报告** | 附诊断命令（状态、条目数、文件位置、日志） |
+| **新插件汉化请求** | 附扫描命令，让提交者直接贴待译清单 |
+| **PR 模板** | 自查清单含「是否修改 `_generic`」必答项 |
 
 ---
 
@@ -134,7 +176,13 @@ python3 scripts/merge-dict.py web/zh-cn.js glossary/dom-zh.json dom
 │   ├── zh-plugin-sync.py       # 插件自动同步器（开机自启）
 │   ├── merge-dict.py           # DOM 词表 → zh-cn.js
 │   ├── scan.py                 # 扫描残留英文 + 反查 key
-│   └── find-keys.py            # 英文 → key 反查工具
+│   ├── find-keys.py            # 英文 → key 反查工具
+│   ├── validate-glossary.py    # 词表规范校验（CI 用）
+│   ├── scan-secrets.py         # 凭据泄漏扫描（CI 用）
+│   └── coverage-report.py      # 覆盖率统计
+├── .github/
+│   ├── workflows/ci.yml        # CI：9 项自动校验
+│   └── ISSUE_TEMPLATE/         # 3 个 Issue 模板 + PR 模板
 ├── web/
 │   └── zh-cn.js                # DOM 翻译层（含主题适配）
 └── assets/                     # 截图、字体

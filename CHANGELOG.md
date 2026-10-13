@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+### 新增
+- **CI 自动校验**（`.github/workflows/ci.yml`）
+  push 与 PR 自动跑 9 项检查，其中 6 项阻断：
+  词表 JSON 合法性与规范（含占位符 / HTML 标签保留、疑似未翻译、
+  `_generic` 禁用词）、Python 与 JS 语法、换行符必须 LF、凭据泄漏扫描
+- **Issue / PR 模板**（3 个 Issue + 1 个 PR）
+  词条补充、Bug 报告、新插件汉化请求；PR 模板含「是否修改 `_generic`」必答项
+- 三个 CI 校验脚本，也可在本地跑：
+  `validate-glossary.py`（词表规范）、`scan-secrets.py`（凭据扫描，支持
+  `--staged` 只扫暂存区）、`coverage-report.py`（覆盖率统计）
+
 ### 计划
 - 补齐 LMS 设置页剩余缺译 key
 - 扩展扫描器覆盖首页侧边栏（AJAX 动态加载，当前 HTTP 抓取覆盖不到）

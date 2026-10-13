@@ -1,0 +1,99 @@
+name: 词条补充 / Translation
+description: 补充或修正界面译文（最常见的贡献类型）
+title: "[词条] "
+labels: ["translation", "good first issue"]
+body: |
+  ## 类型
+
+  请勾选：
+
+  - [ ] 补充新词条
+  - [ ] 修正错误译文
+  - [ ] 修正误伤（本来该保留原文却被翻译了）
+
+  ---
+
+  ## 这个文本属于哪一层？
+
+  **判断错层会导致修复无效**，请务必确认。详见 [docs/architecture.md](../blob/master/docs/architecture.md#三层模型)。
+
+  - [ ] **第 1 层 —— LMS 主库 key**
+    - 形如 `SETUP_PASSWORD_REPEAT`，在 `/opt/mediaserver/strings.txt` 里
+    - → 加进 `glossary/lms-core.json`
+
+  - [ ] **第 2 层 —— 插件 key**
+    - 形如 `PLUGIN_RAOPBRIDGE_AUTORUN`，在插件自己的 `strings.txt` 里
+    - → 加进 `glossary/plugins.json`
+
+  - [ ] **第 3 层 —— DOM 层**
+    - Perl 里硬编码的字符串、动态菜单项、没有 key 的文本
+    - → 加进 `glossary/dom-zh.json`
+
+  > 不确定？用扫描工具反查：
+  > ```bash
+  > python3 scripts/scan.py <设备IP> --strings strings-remote.txt
+  > ```
+  > 能反查到 key → 第 1 或第 2 层；反查不到 → 第 3 层。
+
+  ---
+
+  ## 环境
+
+  | 项 | 值 |
+  |---|---|
+  | LMS / Daphile 版本 | <!-- 例：Lyrion Music Server 9.0.3 / Daphile 25.05-b251550 --> |
+  | 界面语言 | 中文（简） |
+  | 主题 | <!-- 深色 / 浅色 / 设备 --> |
+  | 浏览器 | <!-- Chrome / Firefox / Safari + 版本 --> |
+
+  ---
+
+  ## 未汉化的文本
+
+  请照抄界面上的**英文原文**（不要翻译，不要省略）：
+
+  ```
+  （粘贴英文原文，多条用空行分隔）
+  ```
+
+  对应的 strings key（如果知道）：
+
+  ```
+  KEY_NAME_1
+  KEY_NAME_2
+  ```
+
+  出现位置（页面路径）：
+
+  ```
+  例：设置 → 高级 → 性能
+  例：http://<host>:9000/Daphile/plugins/ExtendedBrowseModes/settings/browsemodesplayer.html
+  ```
+
+  ---
+
+  ## 建议译文
+
+  ```
+  KEY_NAME_1 = 你的译文
+  ```
+
+  **翻译时请注意**（详见 [docs/contributing.md](../blob/master/docs/contributing.md)）：
+
+  - [ ] 占位符 `%s` / `%d` 已原样保留
+  - [ ] HTML 标签 `<a href="...">` `<br>` `<b>` 已原样保留
+  - [ ] 专名（Spotify / Lyrion Music Server / 音频格式名）保持原文
+  - [ ] 格式标识符（`TITLE` / `TRACKNUM.ARTIST - TITLE`）保持原文
+  - [ ] 没有加入 `_generic`（除非该词语义完全无歧义，见文档红线）
+
+  ---
+
+  ## 截图
+
+  <!-- 强烈建议附上，能大幅加快确认速度 -->
+
+  ---
+
+  ## 补充说明
+
+  <!-- 其他上下文，例如这个文本在什么控件里、是否动态生成 -->

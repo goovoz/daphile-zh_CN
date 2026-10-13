@@ -1,0 +1,100 @@
+name: Bug 报告
+description: 汉化不生效、显示异常、部署问题
+title: "[Bug] "
+labels: ["bug"]
+body: |
+  ## 现象描述
+
+  <!-- 哪里没汉化 / 显示不对 / 报什么错 -->
+
+  ---
+
+  ## 复现步骤
+
+  1.
+  2.
+  3.
+
+  ---
+
+  ## 环境
+
+  | 项 | 值 |
+  |---|---|
+  | LMS / Daphile 版本 | |
+  | 操作系统 | |
+  | 浏览器 + 版本 | |
+  | 主题 | <!-- 深色 / 浅色 / 设备 --> |
+  | 访问端口 | <!-- 80 / 9000 —— 两者行为不同，务必注明 --> |
+
+  ---
+
+  ## 部署方式
+
+  - [ ] 只部署了 `strings.txt` 补丁
+  - [ ] 部署了 `zh-cn.js`（**必须两个 webroot 都放**）
+  - [ ] 部署了 `zh-plugin-sync`
+  - [ ] 已挂开机自启（`start_pre()`）
+  - [ ] 重启过 LMS
+
+  ---
+
+  ## 诊断信息
+
+  请贴出以下命令的输出，能极大加快排查（见 [docs/troubleshooting.md](../blob/master/docs/troubleshooting.md)）：
+
+  ```bash
+  # LMS 与播放器状态
+  ssh daphile '/etc/init.d/mediaserver status; ps aux | grep -c "[s]queezelite"'
+
+  # 词表条目数
+  ssh daphile 'grep -c ZH_CN /opt/mediaserver/strings.txt'
+
+  # zh-cn.js 两个位置是否都在
+  ssh daphile 'ls -la /var/www/localhost/htdocs/js/zh-cn.js \
+                            /opt/mediaserver/HTML/Daphile/js/zh-cn.js'
+
+  # 同步器最近日志
+  ssh daphile 'tail -20 /var/log/zh-plugin-sync.log'
+  ```
+
+  ---
+
+  ## 页面 HTML 中的实际情况
+
+  在出问题的页面按 F12 → Elements，或：
+
+  ```bash
+  curl -s "http://<host>:9000/<出问题的页面路径>" | grep -c 'zh-cn.js'
+  ```
+
+  - [ ] 输出 1（zh-cn.js 已注入）
+  - [ ] 输出 0（未注入 —— 路径或 webroot 问题）
+
+  ---
+
+  ## 浏览器控制台
+
+  F12 → Console，是否有红色报错？
+
+  ```
+  （粘贴报错）
+  ```
+
+  另外执行这两个变量看看：
+
+  ```javascript
+  __zhTheme      // 期望 'bg' 或 'theme'
+  __zhThemeLum   // 期望类似 '0.11' 的数值
+  ```
+
+  ---
+
+  ## 截图
+
+  ---
+
+  ## 相关文档
+
+  已查阅 [故障排查手册](../blob/master/docs/troubleshooting.md)：
+  - [ ] 是

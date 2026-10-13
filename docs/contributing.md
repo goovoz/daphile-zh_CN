@@ -128,19 +128,42 @@ NAME  PORT  LEVEL  MODE  SERVER  INTERFACE  TYPE  SIZE  TIME  DATE  BITS
 
 ## 提交前自检
 
+**最省事的方式 —— 直接跑 CI 的同款检查**（前两项必须通过）：
+
 ```bash
-# 1. JSON 合法性
-python3 -c "import json; [json.load(open(f)) for f in ['glossary/lms-core.json','glossary/plugins.json','glossary/dom-zh.json']]; print('JSON OK')"
+python3 scripts/validate-glossary.py && python3 scripts/scan-secrets.py
+```
 
-# 2. 无敏感信息（IP / 密码 / 代理凭据）
-grep -rInE "password[\"']?\s*[:=]\s*[\"'][^\"']+|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" \
-     glossary/ scripts/ web/ | grep -v "127.0.0.1" || echo "无敏感信息"
+它检查：
+- 词表 JSON 合法性与结构
+- **占位符 `%s` / `%d` 是否在译文里保留**（丢了会导致字段消失）
+- **HTML 标签 `<a href>` / `<br>` / `<b>` 是否保留**（丢了会导致链接消失）
+- 疑似未翻译的纯英文（专名白名单除外）
+- **`_generic` 禁用词**（`NAME` / `PORT` / `LEVEL` / `MODE` / `SERVER` / `INTERFACE`）
+- 凭据、真实内网 IP、代理凭据、私钥
+- 不该提交的文件（`.bak` / `strings-*.txt` / `need-*.json`）
 
-# 3. zh-cn.js 语法
+需要更细的检查时：
+
+```bash
+# 覆盖率统计（信息性）
+python3 scripts/coverage-report.py
+
+# JS 语法
 node --check web/zh-cn.js
 
-# 4. 脚本语法
-for f in scripts/*.py; do python3 -c "import ast;ast.parse(open('$f',encoding='utf-8').read())"; done && echo "Python OK"
+# 换行符（CRLF 会让 LMS 解析失败）
+python3 -c "
+import glob,os
+bad=[f for f in glob.glob('**/*',recursive=True) if os.path.isfile(f)
+     and '.git/' not in f and not f.startswith('assets')
+     and f.endswith(('.py','.js','.json','.md','.yml'))
+     and b'
+' in open(f,'rb').read()]
+print('CRLF 文件:', bad or '无')"
+
+# 暂存区专项扫描（提交前确认没把垃圾带进去）
+python3 scripts/scan-secrets.py --staged
 ```
 
 ### 清理规则
